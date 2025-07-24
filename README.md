@@ -1,37 +1,69 @@
-# 🎬 SeenIt – Movie List Manager (PWA) - IN PROGRESS
+# React + TypeScript + Vite
 
-**SeenIt** is a Progressive Web App (PWA) for managing your movie watchlists – both shared and private. It lets users track watched films, plan future viewings, and rate or review their favorites. Designed to work offline, on mobile and desktop, and to be easily shared with friends.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## 🚀 Features
+Currently, two official plugins are available:
 
-### 👤 User Accounts
-- Secure user login and authentication
-- Personal and shared movie lists
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-### 📝 Movie List
-- Add movies manually or from a pre-defined base
-- Movie fields:
-  - Title
-  - Release year
-  - Poster image
-  - Description
-  - and more...
-- Shared and private watchlists
+## Expanding the ESLint configuration
 
-## 🧰 Tech Stack
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-| Layer       | Technology                            |
-|-------------|----------------------------------------|
-| **Frontend**| React + Vite + TypeScript              |
-| **Styling** | Tailwind CSS                           |
-| **Forms**   | React Hook Form                        |
-| **PWA**     | vite-plugin-pwa                        |
+```js
+export default tseslint.config([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
 
-## 🔧 Getting Started
+      // Remove tseslint.configs.recommended and replace with this
+      ...tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      ...tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      ...tseslint.configs.stylisticTypeChecked,
 
-```bash
-git clone https://github.com/budaala/seenit.git
-cd seenit
-npm install
-npm run dev
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
+
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default tseslint.config([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
