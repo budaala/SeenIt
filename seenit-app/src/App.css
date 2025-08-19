@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #5936ba;
+  --color-secondary: #da6fee;
+  --color-third: #340065;
+  --color-fourth: #e58c8c;
+  --color-bgColor: #0d011a;
+  --font-family: "Montserrat", sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-bgColor text-white font-family;
+  }
+
+  .link {
+    @apply text-white hover:text-secondary transition-colors;
+  }
+}
