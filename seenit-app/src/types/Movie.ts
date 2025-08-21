@@ -1,13 +1,14 @@
 export type Movie = {
-  id: string
-  title: string
-  year: number
-  cover: string
-  description: string
-  trailer: string
-  imdbRating: number
-  personalRating: number | null
-  status: 'watched' | 'toWatch'
-  streaming: string[]
-  inCollection: boolean
-}
+  id: number;
+  title: string;
+  year: number;
+  cover: string;
+  description: string;
+  trailer: string;
+  rating: number;
+  poster_path: string;
+  personalRating: number | null;
+  status: "watched" | "toWatch";
+  streaming: string[];
+  inCollection: boolean;
+};

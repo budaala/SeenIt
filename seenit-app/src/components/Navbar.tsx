@@ -20,7 +20,7 @@ const Navbar: React.FC = () => {
             </Link>
           </li>
           <li>
-            <Link to="/movies" className="link">
+            <Link to="/my-list" className="link">
               <FormatListBulletedIcon />
             </Link>
           </li>

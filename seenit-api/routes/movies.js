@@ -4,16 +4,25 @@ import fetch from "node-fetch";
 
 const router = express.Router();
 
+const getImageUrl = (path) => {
+  return `https://image.tmdb.org/t/p/w500${path}`;
+};
+
 // Get all movies
 
-router.get("/top-rated", async (req, res) => {
+router.get("/", async (req, res) => {
+  console.log(req.query);
+  const filter = req.query.type || "popular";
+  const page = req.query.page || 1;
+
   try {
     const response = await fetch(
-      `https://api.themoviedb.org/3/movie/top_rated?api_key=${process.env.TMDB_API_KEY}&language=en-US&page=1`
+      `https://api.themoviedb.org/3/movie/${filter}?api_key=${process.env.TMDB_API_KEY}&language=en-US&page=${page}&region=${process.env.TMDB_REGION}`
     );
 
     if (!response.ok) {
-      throw new Error("Failed to fetch from TMDB");
+      console.error("Failed to fetch from TMDB:", response.statusText);
+      return res.status(response.status).json({ error: "Failed to fetch movies" });
     }
 
     const data = await response.json();
@@ -23,25 +32,14 @@ router.get("/top-rated", async (req, res) => {
       ...movie,
       poster_path: getImageUrl(movie.poster_path),
       backdrop_path: getImageUrl(movie.backdrop_path),
+      rating: (Math.round(movie.vote_average * 100) / 100).toFixed(1),
     }));
 
-    // np. tylko pierwsze 10 filmów
-    res.json(data.results.slice(0, 10));
+    res.json({ results: data.results, total_results: data.total_results > 10000 ? 10000 : data.total_results });
   } catch (err) {
     console.error("Error fetching TMDB movies:", err.message);
     res.status(500).json({ error: "Failed to fetch movies" });
   }
-});
-
-const getImageUrl = (path) => {
-  return `https://image.tmdb.org/t/p/w500${path}`;
-};
-
-// Add a movie
-router.post("/", async (req, res) => {
-  const newMovie = new Movie(req.body);
-  await newMovie.save();
-  res.status(201).json(newMovie);
 });
 
 // const options = {
