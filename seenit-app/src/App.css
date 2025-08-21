@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #5936ba;
+  --color-secondary: #da6fee;
+  --color-transparent-gray: #0d011a90;
+  --color-third: #340065;
+  --color-fourth: #e58c8c;
+  --color-bgColor: #0d011a;
+  --font-family: "Montserrat", sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-bgColor text-white font-family;
+  }
+
+  .link,
+  .icon {
+    @apply text-white;
+    &:hover {
+      @apply text-secondary transition duration-300 cursor-pointer;
+    }
+  }
+
+  .paginationButton {
+    @apply h-7 w-7 border border-transparent-gray shadow-sm shadow-secondary rounded-full m-0 disabled:opacity-50 disabled:shadow-gray-700 items-center flex justify-center;
+    &:hover {
+      @apply border-secondary shadow-lg cursor-pointer transition duration-300 disabled:border-transparent-gray disabled:bg-transparent disabled:shadow-gray-700 disabled:shadow-sm disabled:cursor-auto;
+    }
+  }
+
+  .movieCard {
+    &:hover {
+      @apply shadow-lg shadow-secondary cursor-pointer transition duration-300;
+    }
+    .action {
+      @apply absolute bg-transparent-gray text-white px-2 py-1 rounded flex items-center gap-1;
+      &:hover {
+        @apply cursor-default;
+      }
+    }
+  }
+}

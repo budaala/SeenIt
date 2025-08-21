@@ -1,0 +1,27 @@
+const API_URL = "http://localhost:5001/api";
+
+export const movieService = {
+  async getMovies(type: string = "popular", page: number = 1) {
+    const response = await fetch(`${API_URL}/movies?type=${type}&page=${page}`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch movies");
+    }
+    console.log(`Fetching movies of type: ${type}, page: ${page}`);
+    return response.json();
+  },
+
+  // async changeStatus(movieId: number, status: "watched" | "unwatched") {
+    // const response = await fetch(`${API_URL}/movies/${movieId}/status`, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({ status }),
+    // });
+    // if (!response.ok) {
+    //   throw new Error("Failed to change movie status");
+    // }
+  //   console.log(`Changing status for movie ID ${movieId} to ${status}`);
+    // return response.json();
+  // },
+};
