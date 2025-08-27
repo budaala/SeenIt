@@ -4,7 +4,7 @@ import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { Link } from "react-router-dom";
 
-import logo from "../assets/SeenIt-nobg.png";
+import logo from "../assets/LogoWithName.png";
 
 const Navbar: React.FC = () => {
   return (
