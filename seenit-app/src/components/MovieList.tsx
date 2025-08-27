@@ -3,14 +3,13 @@ import { useSearchParams } from "react-router-dom";
 import { movieService } from "../services/movieService";
 import {
   StarBorder as StarBorderIcon,
-  Add as AddIcon,
-  Visibility as VisibilityIcon,
+  // Add as AddIcon,
+  // Visibility as VisibilityIcon,
   ArrowLeft as ArrowLeftIcon,
   FastRewind as FastRewindIcon,
   ArrowRight as ArrowRightIcon,
   FastForward as FastForwardIcon,
-  VisibilityOutlined as VisibilityOutlinedIcon,
-  Search as SearchIcon,
+  // VisibilityOutlined as VisibilityOutlinedIcon,
 } from "@mui/icons-material";
 import type { Movie } from "../types/Movie";
 import PosterPlaceholder from "./PosterPlaceholder";
@@ -85,7 +84,7 @@ const MovieList: React.FC<MovieListProps> = ({ type = "popular" }) => {
   //       return movie;
   //     })
   //   );
-    
+
   //   console.log(`Changed status for movie ID ${movieId} to ${newStatus}`);
   //   movieService.changeStatus(movieId, newStatus);
   // };
@@ -107,7 +106,6 @@ const MovieList: React.FC<MovieListProps> = ({ type = "popular" }) => {
           setQueryInput={setQueryInput}
           handleSearch={handleSearch}
           clearSearch={clearSearch}
-          searchParams={searchParams}
           placeholder="Search for movies..."
         />
       </div>

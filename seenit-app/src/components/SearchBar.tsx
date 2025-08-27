@@ -10,7 +10,6 @@ type SearchBarProps = {
   setQueryInput: (value: string) => void;
   handleSearch: (e: React.FormEvent<HTMLFormElement>) => void;
   clearSearch: () => void;
-  searchParams: URLSearchParams;
   placeholder?: string;
 };
 
@@ -19,7 +18,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
   setQueryInput,
   handleSearch,
   clearSearch,
-  searchParams,
   placeholder,
 }) => {
   const [showBar, setShowBar] = useState(false);

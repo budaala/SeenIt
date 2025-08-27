@@ -47,7 +47,7 @@
       .searchInput {
         @apply w-full h-9 border bg-bgColor border-transparent-gray shadow-sm shadow-white rounded-full px-4;
         &:focus {
-          @apply shadow-secondary shadow-lg cursor-text transition duration-300 outline-none;
+          @apply shadow-secondary border-secondary cursor-text transition duration-300 outline-none;
         }
       }
 
