@@ -11,7 +11,7 @@ const Navbar: React.FC = () => {
     <nav className="px-4 py-3">
       <div className="container mx-auto flex items-center justify-center sm:justify-between max-w-5xl">
         <Link to="/">
-          <img src={logo} alt="SeenIt logo" className="h-15" />
+          <img src={logo} alt="SeenIt logo" className="h-10" />
         </Link>
         <ul className="space-x-6 hidden sm:flex">
           <li>

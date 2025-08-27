@@ -10,8 +10,11 @@ import {
   ArrowRight as ArrowRightIcon,
   FastForward as FastForwardIcon,
   VisibilityOutlined as VisibilityOutlinedIcon,
+  Search as SearchIcon,
 } from "@mui/icons-material";
 import type { Movie } from "../types/Movie";
+import PosterPlaceholder from "./PosterPlaceholder";
+import MovieSearchBar from "./SearchBar";
 
 type MovieListProps = {
   type?: "popular" | "top_rated" | "upcoming";
@@ -25,24 +28,51 @@ const MovieList: React.FC<MovieListProps> = ({ type = "popular" }) => {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const pageParam = parseInt(searchParams.get("page") || "1", 10);
-  
-  // let newStatus: "watched" | "unwatched" = "unwatched";
+  const query = searchParams.get("query") || "";
+  const [queryInput, setQueryInput] = useState(searchParams.get("query") || "");
 
+  // let newStatus: "watched" | "unwatched" = "unwatched";
   useEffect(() => {
     setLoading(true);
-    movieService
-      .getMovies(type, pageParam)
-      .then((data) => {
-        console.log("Fetched movies:", data);
+
+    const fetchData = async () => {
+      try {
+        let data;
+        if (query.trim() !== "") {
+          // wyszukiwanie
+          data = await movieService.searchMovies(query, pageParam);
+        } else {
+          // lista filmów typu "type"
+          data = await movieService.getMovies(type, pageParam);
+        }
+
         setMovies(data.results);
         setTotalResults(data.total_results);
-      })
-      .catch((err) => console.error("Error fetching movies:", err))
-      .finally(() => setLoading(false));
-  }, [type, pageParam]);
+      } catch (err) {
+        console.error("Error fetching movies:", err);
+        setMovies([]);
+        setTotalResults(0);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [type, query, pageParam]);
 
   const goToPage = (page: number) => {
-    setSearchParams({ page: page.toString() });
+    const query = searchParams.get("query") || "";
+    setSearchParams({ query, page: page.toString() });
+  };
+
+  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSearchParams({ query: queryInput, page: "1" });
+  };
+
+  const clearSearch = () => {
+    setQueryInput("");
+    setSearchParams({ query: "", page: "1" });
   };
 
   // const changeStatus = (movieId: number) => {
@@ -63,82 +93,114 @@ const MovieList: React.FC<MovieListProps> = ({ type = "popular" }) => {
   if (loading) return <p className="text-center text-gray-500">Loading...</p>;
 
   return (
-    <div className="container my-3 mx-auto px-2 xs:px-4 lg:px-8 max-w-5xl">
-      <h2 className="text-2xl font-bold mb-4">
-        {type === "popular"
-          ? "Popular Movies"
-          : type === "top_rated"
-          ? "Top Rated Movies"
-          : "Upcoming Movies"}
-      </h2>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-        {movies.map((movie) => (
-          <div
-            key={movie.id}
-            className="movieCard relative group rounded-xl shadow-md overflow-hidden w-full h-full flex flex-col"
-          >
-            <div className="flex sm:hidden group-hover:flex">
-              {/* rating */}
-              <span className="action top-1 left-1">
-                {movie.rating}
-                <StarBorderIcon className="icon" fontSize="small" />
-              </span>
-              {/* add to list */}
-              {/* <span className="action top-1 right-1">
-                <AddIcon className="icon" fontSize="small" />
+    <div className="container my-5 mx-auto px-2 xs:px-4 lg:px-8 max-w-5xl">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4">
+        <h1>
+          {type === "popular"
+            ? "Popular Movies"
+            : type === "top_rated"
+            ? "Top Rated Movies"
+            : "Upcoming Movies"}
+        </h1>
+        <MovieSearchBar
+          queryInput={queryInput}
+          setQueryInput={setQueryInput}
+          handleSearch={handleSearch}
+          clearSearch={clearSearch}
+          searchParams={searchParams}
+          placeholder="Search for movies..."
+        />
+      </div>
+      <div>
+        {query ? (
+          <p className="mb-2 text-gray-600">
+            Showing results for "<span className="font-semibold">{query}</span>"
+          </p>
+        ) : (
+          <p className="mb-2 text-gray-600">
+            Showing {type.replace("_", " ")} movies
+          </p>
+        )}
+        {totalResults > 0 && (
+          <>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {movies.map((movie) => (
+                <div
+                  key={movie.id}
+                  className="movieCard relative group rounded-xl shadow-md overflow-hidden w-full h-full flex flex-col"
+                >
+                  <div className="flex sm:hidden group-hover:flex">
+                    {/* rating */}
+                    <span className="action top-1 left-1">
+                      {movie.rating}
+                      <StarBorderIcon className="iconButton" fontSize="small" />
+                    </span>
+                    {/* add to list */}
+                    {/* <span className="action top-1 right-1">
+                <AddIcon className="iconButton" fontSize="small" />
               </span> */}
-              {/* seen */}
-              {/* <span className="action top-9 right-1" onClick={() => changeStatus(movie.id)}>
+                    {/* seen */}
+                    {/* <span className="action top-9 right-1" onClick={() => changeStatus(movie.id)}>
                 {movie.status === "watched" ? (
-                  <VisibilityIcon className="icon" fontSize="small" />
+                  <VisibilityIcon className="iconButton" fontSize="small" />
                 ) : (
-                  <VisibilityOutlinedIcon className="icon" fontSize="small" />
+                  <VisibilityOutlinedIcon className="iconButton" fontSize="small" />
                 )}
               </span> */}
+                  </div>
+                  {movie.poster_path ? (
+                    <img
+                      src={movie.poster_path}
+                      alt={movie.title}
+                      className="w-full h-64 object-cover"
+                    />
+                  ) : (
+                    <PosterPlaceholder />
+                  )}
+                  <div className="p-2 flex flex-col justify-between flex-grow">
+                    <h2 className="movieTitle">{movie.title}</h2>
+                  </div>
+                </div>
+              ))}
             </div>
-            <img
-              src={movie.poster_path}
-              alt={movie.title}
-              className="w-full h-64 object-cover"
-            />
-            <div className="p-2 flex flex-col justify-between flex-grow">
-              <h3 className="text-lg font-semibold">{movie.title}</h3>
+            <div className="flex justify-center items-center mt-4 space-x-4">
+              <button
+                onClick={() => goToPage(1)}
+                disabled={pageParam === 1}
+                className="paginationButton"
+              >
+                <FastRewindIcon fontSize="small" />
+              </button>
+              <button
+                onClick={() => goToPage(Math.max(pageParam - 1, 1))}
+                disabled={pageParam === 1}
+                className="paginationButton"
+              >
+                <ArrowLeftIcon />
+              </button>
+              <span className="px-2 py-2 ml-0">
+                Page {pageParam} of {totalPages}
+              </span>
+              <button
+                onClick={() => goToPage(Math.min(pageParam + 1, totalPages))}
+                disabled={pageParam === totalPages}
+                className="paginationButton"
+              >
+                <ArrowRightIcon />
+              </button>
+              <button
+                onClick={() => goToPage(totalPages)}
+                disabled={pageParam === totalPages}
+                className="paginationButton"
+              >
+                <FastForwardIcon fontSize="small" />
+              </button>
             </div>
-          </div>
-        ))}
-      </div>
-      <div className="flex justify-center items-center mt-4 space-x-4">
-        <button
-          onClick={() => goToPage(1)}
-          disabled={pageParam === 1}
-          className="paginationButton"
-        >
-          <FastRewindIcon fontSize="small" />
-        </button>
-        <button
-          onClick={() => goToPage(Math.max(pageParam - 1, 1))}
-          disabled={pageParam === 1}
-          className="paginationButton"
-        >
-          <ArrowLeftIcon />
-        </button>
-        <span className="px-2 py-2 ml-0">
-          Page {pageParam} of {totalPages}
-        </span>
-        <button
-          onClick={() => goToPage(Math.min(pageParam + 1, totalPages))}
-          disabled={pageParam === totalPages}
-          className="paginationButton"
-        >
-          <ArrowRightIcon />
-        </button>
-        <button
-          onClick={() => goToPage(totalPages)}
-          disabled={pageParam === totalPages}
-          className="paginationButton"
-        >
-          <FastForwardIcon fontSize="small" />
-        </button>
+          </>
+        )}
+        {totalResults === 0 && (
+          <p className="text-center text-gray-500">No results found.</p>
+        )}
       </div>
     </div>
   );

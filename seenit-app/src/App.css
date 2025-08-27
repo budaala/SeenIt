@@ -15,8 +15,18 @@
     @apply bg-bgColor text-white font-family;
   }
 
+  h1 {
+    @apply text-3xl font-semibold mb-4;
+  }
+  h2 {
+    @apply text-2xl font-semibold mb-3;
+  }
+  h3 {
+    @apply text-xl font-semibold mb-2;
+  }
+
   .link,
-  .icon {
+  .iconButton {
     @apply text-white;
     &:hover {
       @apply text-secondary transition duration-300 cursor-pointer;
@@ -30,6 +40,32 @@
     }
   }
 
+  .searchBarContainer {
+    @apply m-4;
+    .searchBar {
+      @apply flex items-center justify-between p-2 w-full gap-2;
+      .searchInput {
+        @apply w-full h-9 border bg-bgColor border-transparent-gray shadow-sm shadow-white rounded-full px-4;
+        &:focus {
+          @apply shadow-secondary shadow-lg cursor-text transition duration-300 outline-none;
+        }
+      }
+
+      .searchClearButton {
+        @apply absolute right-4 top-2 text-gray-200;
+        &:hover {
+          @apply text-secondary cursor-pointer transition duration-300;
+        }
+      }
+    }
+  }
+  .searchButton {
+    @apply h-9 w-9 border border-transparent-gray shadow-sm shadow-secondary rounded-full items-center flex justify-center;
+    &:hover {
+      @apply border-secondary shadow-lg cursor-pointer transition duration-300;
+    }
+  }
+
   .movieCard {
     &:hover {
       @apply shadow-lg shadow-secondary cursor-pointer transition duration-300;
@@ -39,6 +75,10 @@
       &:hover {
         @apply cursor-default;
       }
+    }
+    .movieTitle {
+      @apply text-lg font-semibold;
+      overflow: hidden;
     }
   }
 }

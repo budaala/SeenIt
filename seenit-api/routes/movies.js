@@ -5,6 +5,8 @@ import fetch from "node-fetch";
 const router = express.Router();
 
 const getImageUrl = (path) => {
+  path ? path : "";
+  if (!path) return null; // Return null if path is empty or undefined
   return `https://image.tmdb.org/t/p/w500${path}`;
 };
 
@@ -39,6 +41,40 @@ router.get("/", async (req, res) => {
   } catch (err) {
     console.error("Error fetching TMDB movies:", err.message);
     res.status(500).json({ error: "Failed to fetch movies" });
+  }
+});
+
+// search movies
+router.get("/search", async (req, res) => {
+  const query = req.query.query;
+  const page = req.query.page || 1;
+
+  if (!query) {
+    return res.status(400).json({ error: "Query parameter is required" });
+  }
+
+  try {
+    const response = await fetch(
+      `https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMDB_API_KEY}&language=en-US&query=${encodeURIComponent(query)}&page=${page}`
+    );
+
+    if (!response.ok) {
+      console.error("Failed to fetch from TMDB:", response.statusText);
+      return res.status(response.status).json({ error: "Failed to search movies" });
+    }
+
+    const data = await response.json();
+    data.results = data.results.map((movie) => ({
+      ...movie,
+      poster_path: getImageUrl(movie.poster_path),
+      backdrop_path: getImageUrl(movie.backdrop_path),
+      rating: (Math.round(movie.vote_average * 100) / 100).toFixed(1),
+    }));
+
+    res.json({ results: data.results, total_results: data.total_results > 10000 ? 10000 : data.total_results });
+  } catch (err) {
+    console.error("Error searching TMDB movies:", err.message);
+    res.status(500).json({ error: "Failed to search movies" });
   }
 });
 
