@@ -1,14 +1,21 @@
 import express from "express";
-import Movie from "../models/Movie.js";
 import fetch from "node-fetch";
+import dotenv from "dotenv";
 
 const router = express.Router();
+dotenv.config();
 
-const getImageUrl = (path) => {
+const getImageUrl = (path, width = "original") => {
   path ? path : "";
   if (!path) return null; // Return null if path is empty or undefined
-  return `https://image.tmdb.org/t/p/w500${path}`;
+  return `https://image.tmdb.org/t/p/${width}${path}`;
 };
+
+const token = process.env.TMDB_BEARER_TOKEN;
+const region = process.env.TMDB_REGION || "US";
+const language = process.env.TMDB_LANGUAGE || "en-US";
+
+const options = { method: 'GET', headers: { accept: 'application/json', Authorization: `Bearer ${token}` } };
 
 // Get all movies
 
@@ -19,7 +26,7 @@ router.get("/", async (req, res) => {
 
   try {
     const response = await fetch(
-      `https://api.themoviedb.org/3/movie/${filter}?api_key=${process.env.TMDB_API_KEY}&language=en-US&page=${page}&region=${process.env.TMDB_REGION}`
+      `https://api.themoviedb.org/3/movie/${filter}?language=${language}=${page}&region=${region}`, options
     );
 
     if (!response.ok) {
@@ -33,7 +40,6 @@ router.get("/", async (req, res) => {
     data.results = data.results.map((movie) => ({
       ...movie,
       poster_path: getImageUrl(movie.poster_path),
-      backdrop_path: getImageUrl(movie.backdrop_path),
       rating: (Math.round(movie.vote_average * 100) / 100).toFixed(1),
     }));
 
@@ -55,7 +61,7 @@ router.get("/search", async (req, res) => {
 
   try {
     const response = await fetch(
-      `https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMDB_API_KEY}&language=en-US&query=${encodeURIComponent(query)}&page=${page}`
+      `https://api.themoviedb.org/3/search/movie?language=${language}&query=${encodeURIComponent(query)}&page=${page}`, options
     );
 
     if (!response.ok) {
@@ -67,7 +73,6 @@ router.get("/search", async (req, res) => {
     data.results = data.results.map((movie) => ({
       ...movie,
       poster_path: getImageUrl(movie.poster_path),
-      backdrop_path: getImageUrl(movie.backdrop_path),
       rating: (Math.round(movie.vote_average * 100) / 100).toFixed(1),
     }));
 
