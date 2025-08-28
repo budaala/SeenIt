@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { movieService } from "../services/movieService";
 import {
-  StarBorder as StarBorderIcon,
   // Add as AddIcon,
   // Visibility as VisibilityIcon,
   ArrowLeft as ArrowLeftIcon,
@@ -12,8 +11,8 @@ import {
   // VisibilityOutlined as VisibilityOutlinedIcon,
 } from "@mui/icons-material";
 import type { Movie } from "../types/Movie";
-import PosterPlaceholder from "./PosterPlaceholder";
 import MovieSearchBar from "./SearchBar";
+import MovieCard from "./MovieCard";
 
 type MovieListProps = {
   type?: "popular" | "top_rated" | "upcoming";
@@ -44,7 +43,7 @@ const MovieList: React.FC<MovieListProps> = ({ type = "popular" }) => {
           // lista filmów typu "type"
           data = await movieService.getMovies(type, pageParam);
         }
-
+        console.log(data);
         setMovies(data.results);
         setTotalResults(data.total_results);
       } catch (err) {
@@ -92,7 +91,7 @@ const MovieList: React.FC<MovieListProps> = ({ type = "popular" }) => {
   if (loading) return <p className="text-center text-gray-500">Loading...</p>;
 
   return (
-    <div className="container my-5 mx-auto px-2 xs:px-4 lg:px-8 max-w-5xl">
+    <div className="container mx-auto my-5 px-2 xs:px-4 lg:px-8 max-w-7xl">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4">
         <h1>
           {type === "popular"
@@ -121,44 +120,9 @@ const MovieList: React.FC<MovieListProps> = ({ type = "popular" }) => {
         )}
         {totalResults > 0 && (
           <>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
               {movies.map((movie) => (
-                <div
-                  key={movie.id}
-                  className="movieCard relative group rounded-xl shadow-md overflow-hidden w-full h-full flex flex-col"
-                >
-                  <div className="flex sm:hidden group-hover:flex">
-                    {/* rating */}
-                    <span className="action top-1 left-1">
-                      {movie.rating}
-                      <StarBorderIcon className="iconButton" fontSize="small" />
-                    </span>
-                    {/* add to list */}
-                    {/* <span className="action top-1 right-1">
-                <AddIcon className="iconButton" fontSize="small" />
-              </span> */}
-                    {/* seen */}
-                    {/* <span className="action top-9 right-1" onClick={() => changeStatus(movie.id)}>
-                {movie.status === "watched" ? (
-                  <VisibilityIcon className="iconButton" fontSize="small" />
-                ) : (
-                  <VisibilityOutlinedIcon className="iconButton" fontSize="small" />
-                )}
-              </span> */}
-                  </div>
-                  {movie.poster_path ? (
-                    <img
-                      src={movie.poster_path}
-                      alt={movie.title}
-                      className="w-full h-64 object-cover"
-                    />
-                  ) : (
-                    <PosterPlaceholder />
-                  )}
-                  <div className="p-2 flex flex-col justify-between flex-grow">
-                    <h2 className="movieTitle">{movie.title}</h2>
-                  </div>
-                </div>
+                <MovieCard key={movie.id} movie={movie} />
               ))}
             </div>
             <div className="flex justify-center items-center mt-4 space-x-4">
