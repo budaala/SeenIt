@@ -8,10 +8,46 @@
   --color-fourth: #e58c8c;
   --color-bgColor: #0d011a;
   --font-family: "Montserrat", sans-serif;
+  --animate-slidein: slidein 0.3s ease-out;
+  --animate-slideinFromLeft: slideinFromLeft 0.3s ease-out;
+  --animate-slideout: slideout 0.3s ease-out;
+
+  @keyframes slidein {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  @keyframes slideinFromLeft {
+    from {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideout {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+  }
 }
 
 @layer base {
-  body {
+  body,
+  html {
     @apply bg-bgColor text-white font-family;
   }
 
@@ -25,60 +61,195 @@
     @apply text-xl font-semibold mb-2;
   }
 
-  .link,
-  .iconButton {
-    @apply text-white;
-    &:hover {
-      @apply text-secondary transition duration-300 cursor-pointer;
-    }
-  }
-
-  .paginationButton {
-    @apply h-7 w-7 border border-transparent-gray shadow-sm shadow-secondary rounded-full m-0 disabled:opacity-50 disabled:shadow-gray-700 items-center flex justify-center;
+  button,
+  .linkLikeButton {
+    @apply border border-transparent-gray shadow-sm shadow-secondary rounded-full px-4 py-1 disabled:opacity-50 disabled:shadow-gray-700 items-center flex justify-center;
     &:hover {
       @apply border-secondary shadow-lg cursor-pointer transition duration-300 disabled:border-transparent-gray disabled:bg-transparent disabled:shadow-gray-700 disabled:shadow-sm disabled:cursor-auto;
     }
   }
-
-  .searchBarContainer {
-    @apply m-4;
-    .searchBar {
-      @apply flex items-center justify-between p-2 w-full gap-2;
-      .searchInput {
-        @apply w-full h-9 border bg-bgColor border-transparent-gray shadow-sm shadow-white rounded-full px-4;
-        &:focus {
-          @apply shadow-secondary border-secondary cursor-text transition duration-300 outline-none;
-        }
-      }
-
-      .searchClearButton {
-        @apply absolute right-4 top-2 text-gray-200;
-        &:hover {
-          @apply text-secondary cursor-pointer transition duration-300;
-        }
-      }
-    }
+}
+.link,
+.iconButton {
+  @apply text-white;
+  &:hover {
+    @apply text-secondary transition duration-300 cursor-pointer;
   }
-  .searchButton {
-    @apply h-9 w-9 border border-transparent-gray shadow-sm shadow-secondary rounded-full items-center flex justify-center;
-    &:hover {
-      @apply border-secondary shadow-lg cursor-pointer transition duration-300;
-    }
-  }
+}
 
-  .movieCard {
-    &:hover {
-      @apply shadow-sm shadow-secondary cursor-pointer transition duration-300;
+.logoLink {
+  @apply h-10 mb-1 rounded-lg;
+  &:hover {
+    @apply scale-110 transition duration-300;
+  }
+}
+
+/* ? PAGINATION */
+.paginationButton {
+  @apply h-7 w-7 mx-1;
+}
+
+/* ? SEARCH BAR */
+.searchBarContainer {
+  @apply m-4;
+  .searchBar {
+    @apply flex items-center justify-between p-2 w-full gap-2;
+    .searchInput {
+      @apply w-full h-9 border bg-bgColor border-transparent-gray shadow-sm shadow-white rounded-full px-4;
+      &:focus {
+        @apply shadow-secondary border-secondary cursor-text transition duration-300 outline-none;
+      }
     }
-    .action {
-      @apply absolute bg-transparent-gray text-white px-2 py-1 rounded flex items-center gap-1;
+
+    .searchClearButton {
+      @apply absolute right-4 top-3 text-gray-200;
       &:hover {
-        @apply cursor-default;
+        @apply text-secondary cursor-pointer transition duration-300;
       }
     }
-    .movieTitle {
-      @apply text-base font-semibold;
-      overflow: hidden;
+  }
+}
+.searchButton {
+  @apply h-9 w-9 border border-transparent-gray shadow-sm shadow-secondary rounded-full items-center flex justify-center;
+  &:hover {
+    @apply border-secondary shadow-lg cursor-pointer transition duration-300;
+  }
+}
+
+/* ? MOVIE CARD */
+.movieCard {
+  &:hover {
+    @apply shadow-sm shadow-secondary cursor-pointer transition duration-300;
+  }
+  .action {
+    @apply absolute bg-transparent-gray text-white px-2 py-1 rounded flex items-center gap-1;
+    &:hover {
+      @apply cursor-default;
+    }
+  }
+  .movieTitle {
+    @apply text-base font-semibold;
+    overflow: hidden;
+  }
+}
+
+/* ? MOVIE DETAILS PAGE */
+.movie-details-page {
+  .container {
+    @apply relative mx-auto my-5 px-2 lg:px-8 max-w-7xl;
+  }
+
+  .backdrop {
+    @apply bg-cover bg-center h-[80vh] relative rounded-lg shadow-lg;
+  }
+
+  .details-overlay {
+    @apply absolute inset-0 flex items-center justify-center bg-black/80 z-10;
+    .goBackSection {
+      @apply absolute top-5 left-40;
+      .goBackButton {
+        @apply flex items-center gap-1 text-white;
+        .buttonIcon {
+          @apply text-lg;
+        }
+      }
+    }
+    .details {
+      @apply flex max-w-7xl flex-col md:flex-row justify-center gap-6 text-white;
+    }
+    /* * POSTER */
+    .poster-section {
+      @apply relative w-3/4 min-w-100 max-w-100;
+      .rating-badge {
+        .action {
+          @apply absolute top-2 left-0 bg-transparent-gray text-white text-lg gap-2 px-2 py-1 rounded flex items-center;
+        }
+      }
+      .poster {
+        @apply rounded-lg shadow-lg;
+      }
+      .showTrailerButton {
+        @apply absolute bottom-5 right-5 border border-transparent py-2 px-2 rounded-full flex items-center;
+        &:hover {
+          @apply border-secondary;
+        }
+        .buttonIcon {
+          @apply text-3xl text-white;
+        }
+      }
+      .movieTrailerModal {
+        @apply fixed inset-0 z-50 flex items-center justify-center bg-black/70;
+        .modalContent {
+          @apply relative bg-black/80 rounded-lg pt-10 pb-8 px-8 shadow-lg max-w-2xl w-full h-120;
+          .video {
+            @apply w-full h-full;
+          }
+          .closeIcon {
+            @apply absolute right-2 top-2 text-gray-200;
+            &:hover {
+              @apply text-secondary cursor-pointer transition duration-300;
+            }
+          }
+        }
+      }
+    }
+
+    /* * INFO */
+    .info {
+      @apply flex flex-col py-4;
+      .header {
+        @apply grid grid-cols-12;
+        .title {
+          @apply col-span-11 text-6xl font-bold mb-2;
+          .year {
+            @apply font-normal text-2xl text-gray-400 ml-3;
+          }
+        }
+      }
+      .subInfo {
+        @apply flex flex-wrap gap-4 items-center mb-8;
+        .genres {
+          @apply flex items-center;
+          .genre {
+            @apply mr-2 text-xs text-gray-300 border border-secondary shadow-none px-5 py-0.5 rounded-full;
+            &:hover {
+              @apply shadow-lg text-white cursor-pointer transition duration-300;
+            }
+          }
+        }
+      }
+      .overview {
+        @apply text-base mb-4;
+      }
+
+      .watchProviderSection {
+        @apply flex flex-row items-center gap-2;
+      }
+      .logoIcon {
+        @apply h-8;
+        &:hover {
+          @apply animate-bounce;
+        }
+      }
+    }
+
+    /* * WATCH PROVIDERS */
+    .movieProvidersSection {
+      @apply flex flex-col my-4;
+      .availableOnHeader {
+        @apply text-gray-300;
+      }
+      .options {
+        @apply flex flex-wrap gap-10 mt-2;
+      }
+
+      .providerOptionHeader {
+        @apply font-semibold text-xl mb-2 text-gray-300;
+      }
+
+      .providersList {
+        @apply flex flex-wrap gap-4 mt-2;
+      }
     }
   }
 }

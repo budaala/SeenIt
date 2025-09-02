@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { StarBorder as StarBorderIcon } from "@mui/icons-material";
 import type { Movie } from "../types/Movie";
+import MovieRating from "./MovieRating";
 import PosterPlaceholder from "./PosterPlaceholder";
 
 type MovieCardProps = {
@@ -26,11 +26,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
       }}
     >
       <div className="flex sm:hidden group-hover:flex">
-        {/* rating */}
-        <span className="action top-1 left-1">
-          {movie.rating}
-          <StarBorderIcon className="iconButton" fontSize="small" />
-        </span>
+        <MovieRating rating={movie.rating} />
       </div>
       {movie.poster_path ? (
         <img

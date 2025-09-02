@@ -78,14 +78,15 @@ const SearchBar: React.FC<SearchBarProps> = ({
             onChange={(e) => setQueryInput(e.target.value)}
             style={{ minWidth: 0 }}
           />
-          <button
-            type="button"
+          <div
+            role="button"
+            tabIndex={0}
             onClick={clearSearch}
             className="searchClearButton ml-1"
             aria-label="Clear search"
           >
             <CloseIcon fontSize="small" />
-          </button>
+          </div>
         </form>
       </div>
     </div>

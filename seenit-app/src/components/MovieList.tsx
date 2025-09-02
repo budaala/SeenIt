@@ -140,7 +140,7 @@ const MovieList: React.FC<MovieListProps> = ({ type = "popular" }) => {
               >
                 <ArrowLeftIcon />
               </button>
-              <span className="px-2 py-2 ml-0">
+              <span className="px-2 py-2 mx-2">
                 Page {pageParam} of {totalPages}
               </span>
               <button
