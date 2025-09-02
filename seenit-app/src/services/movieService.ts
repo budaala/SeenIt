@@ -10,6 +10,24 @@ export const movieService = {
     return response.json();
   },
 
+  async searchMovies(query: string, page: number = 1) {
+    const response = await fetch(`${API_URL}/movies/search?query=${encodeURIComponent(query)}&page=${page}`);
+    if (!response.ok) {
+      throw new Error("Failed to search movies");
+    }
+    console.log(`Searching movies with query: ${query}, page: ${page}`);
+    return response.json();
+  },
+
+  async getMovieDetails(movieId: number) {
+    const response = await fetch(`${API_URL}/movies/${movieId}`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch movie details");
+    }
+    console.log(`Fetching details for movie ID: ${movieId}`);
+    return response.json();
+  },
+
   // async changeStatus(movieId: number, status: "watched" | "unwatched") {
     // const response = await fetch(`${API_URL}/movies/${movieId}/status`, {
     //   method: "POST",
