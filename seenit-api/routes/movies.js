@@ -65,7 +65,12 @@ const returnProviderData = (provider) => {
     283: "https://player.pl/",
     505: "https://player.pl/",
     531: "https://premiery.pl.canalplus.com/",
-    35: "https://rakuten.tv/pl"
+    35: "https://rakuten.tv/pl",
+    1773: "https://www.skyshowtime.com/pl",
+    2102: "https://premiery.pl.canalplus.com/",
+    192: "https://www.youtube.com/movies",
+    3: "https://www.google.com/intl/pl_pl/movies/",
+    1899: "https://play.hbomax.com/"
   };
 
   const providerUrl = providerUrls[provider.provider_id] || null;
@@ -75,6 +80,39 @@ const returnProviderData = (provider) => {
     logo_path: getImageUrl(provider.logo_path, "w92"),
     url: providerUrl,
   };
+}
+
+const getCast = async (movieId) => {
+  try {
+    const response = await fetch(`https://api.themoviedb.org/3/movie/${movieId}/credits`, options);
+    const res = await response.json();
+    return res.cast.map((member) => ({
+      id: member.id,
+      name: member.name,
+      character: member.character,
+      profile_path: getImageUrl(member.profile_path)
+    }));
+  } catch (err) {
+    console.error("Error fetching cast:", err.message);
+    return [];
+  }
+}
+
+const getCrew = async (movieId) => {
+  try {
+    const response = await fetch(`https://api.themoviedb.org/3/movie/${movieId}/credits`, options);
+    const res = await response.json();
+    console.log(res.crew);
+    return res.crew.map((member) => ({
+      id: member.id,
+      name: member.name,
+      job: member.job,
+      profile_path: getImageUrl(member.profile_path)
+    }));
+  } catch (err) {
+    console.error("Error fetching crew:", err.message);
+    return [];
+  }
 }
 
 const token = process.env.TMDB_BEARER_TOKEN;
@@ -180,6 +218,8 @@ router.get("/:id", async (req, res) => {
       backdrop_path: getImageUrl(data.backdrop_path),
       rating: (Math.round(data.vote_average * 100) / 100).toFixed(1),
       watchProviders: await getWatchProviders(data.id),
+      cast: await getCast(data.id),
+      crew: await getCrew(data.id),
     }
     console.log(movie.watchProviders)
     res.json(movie);
