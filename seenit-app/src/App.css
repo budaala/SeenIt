@@ -6,7 +6,7 @@
   --color-transparent-gray: #0d011a90;
   --color-third: #340065;
   --color-fourth: #e58c8c;
-  --color-bgColor: #0d011a;
+  --color-bgColor: #0b0115;
   --font-family: "Montserrat", sans-serif;
 }
 
@@ -131,7 +131,7 @@
   }
 
   .details {
-    @apply absolute top-0 flex sm:w-full flex-col my-auto mx-3 justify-center items-center gap-3 text-white z-10 w-[90vw];
+    @apply absolute top-0 flex sm:w-full flex-col my-auto justify-center items-center gap-3 text-white z-10 w-[90vw];
     .overviewInfo {
       @apply relative flex flex-col lg:flex-row gap-5 justify-center items-center max-w-xl lg:max-w-7xl mt-5 my-auto mx-auto;
     }
@@ -177,7 +177,7 @@
   .info {
     @apply flex flex-col py-4 mx-auto;
     .header {
-      @apply flex flex-col-reverse xl:flex-row xl:justify-between w-full mb-4;
+      @apply flex flex-col-reverse w-full mb-4;
       .title {
         @apply flex flex-row items-baseline flex-wrap text-3xl sm:text-4xl md:text-6xl font-bold mb-2;
         .year {

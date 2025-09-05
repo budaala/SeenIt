@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar";
 import ProfilePage from "./pages/ProfilePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import MovieDetailsPage from "./pages/MovieDetailsPage";
+import Footer from "./components/Footer";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/movies/:id" element={<MovieDetailsPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+      <Footer />
     </Router>
   );
 }
