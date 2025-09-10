@@ -115,6 +115,23 @@ const getCrew = async (movieId) => {
   }
 }
 
+const getMovieCredits = async (personId) => {
+  try {
+    const response = await fetch(`https://api.themoviedb.org/3/person/${personId}/movie_credits`, options);
+    const res = await response.json();
+    const results = res.cast.map((movie) => ({
+      id: movie.id,
+      title: movie.title,
+      character: movie.character,
+      poster_path: getImageUrl(movie.poster_path)
+    }));
+    return results.splice(0, 10);
+  } catch (err) {
+    console.error("Error fetching movie credits:", err.message);
+    return [];
+  }
+}
+
 const token = process.env.TMDB_BEARER_TOKEN;
 const region = process.env.TMDB_REGION || "US";
 const language = process.env.TMDB_LANGUAGE || "en-US";
@@ -226,6 +243,37 @@ router.get("/:id", async (req, res) => {
   } catch (err) {
     console.error("Error fetching TMDB movie:", err.message);
     res.status(500).json({ error: "Failed to fetch movie" });
+  }
+});
+
+router.get("/persons/:id", async (req, res) => {
+  const personId = req.params.id;
+
+  try {
+    const response = await fetch(
+      `https://api.themoviedb.org/3/person/${personId}?language=${language}`, options
+    );
+    if (!response.ok) {
+      console.error("Failed to fetch from TMDB:", response.statusText);
+      return res.status(response.status).json({ error: "Failed to fetch person" });
+    }
+    const data = await response.json();
+    const person = {
+      id: data.id,
+      name: data.name,
+      biography: data.biography,
+      birthday: data.birthday,
+      deathday: data.deathday,
+      imbd_id: data.imdb_id,
+      profile_path: getImageUrl(data.profile_path),
+      known_for_department: data.known_for_department,
+      movie_credits: await getMovieCredits(data.id),
+    }
+    console.log(person);
+    res.json(person);
+  } catch (err) {
+    console.error("Error fetching TMDB person:", err.message);
+    res.status(500).json({ error: "Failed to fetch person" });
   }
 });
 

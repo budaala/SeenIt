@@ -7,21 +7,27 @@ import Navbar from "./components/Navbar";
 import ProfilePage from "./pages/ProfilePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import MovieDetailsPage from "./pages/MovieDetailsPage";
+import PersonPage from "./pages/PersonPage";
 import Footer from "./components/Footer";
 
 function App() {
   return (
     <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/top-rated" element={<TopRatedPage />} />
-        <Route path="/my-list" element={<MyMovieList />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/movies/:id" element={<MovieDetailsPage />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-      <Footer />
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <main className="flex-1">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/top-rated" element={<TopRatedPage />} />
+            <Route path="/my-list" element={<MyMovieList />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/movies/:id" element={<MovieDetailsPage />} />
+            <Route path="/person/:id" element={<PersonPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
     </Router>
   );
 }

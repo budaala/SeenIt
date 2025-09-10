@@ -1,16 +1,17 @@
 import { useEffect, useState, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { movieService } from "../services/movieService";
 import type { Movie } from "../types/Movie";
 import {
   Close as CloseIcon,
   PlayArrow as PlayArrowIcon,
-  ArrowBackIos as ArrowBackIcon,
 } from "@mui/icons-material";
 import MovieRating from "../components/MovieRating";
 import imdbLogo from "../assets/logos/imdb-logo.png";
 import MovieWatchProviders from "../components/MovieWatchProviders";
 import PersonPlaceholder from "../components/PersonPlaceholder";
+import GoBack from "../components/GoBackButton";
+import PosterPlaceholder from "../components/PosterPlaceholder";
 
 export default function MovieDetails() {
   const { id } = useParams();
@@ -19,8 +20,6 @@ export default function MovieDetails() {
   const [showTrailer, setShowTrailer] = useState(false);
 
   const modalRef = useRef<HTMLDivElement>(null);
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     setLoading(true);
@@ -56,16 +55,8 @@ export default function MovieDetails() {
   if (loading) return <p className="text-center text-gray-500">Loading...</p>;
 
   return (
-    <>
-      <div className="goBackSection">
-        <a
-          role="button"
-          className="goBackButton link"
-          onClick={() => navigate(-1)}
-        >
-          <ArrowBackIcon className="buttonIcon iconButton" />
-        </a>
-      </div>
+    <div className="pb-10">
+      <GoBack />
       <div className="movie-details-page relative">
         {movie ? (
           <>
@@ -84,11 +75,15 @@ export default function MovieDetails() {
                     <div className="rating-badge">
                       <MovieRating rating={movie.rating} />
                     </div>
-                    <img
-                      src={movie.poster_path}
-                      alt={movie.title}
-                      className="poster"
-                    />
+                    {movie.poster_path ? (
+                      <img
+                        src={movie.poster_path}
+                        alt={movie.title}
+                        className="poster"
+                      />
+                    ) : (
+                      <PosterPlaceholder />
+                    )}
                     <div className="movieTrailerSection">
                       {movie.video && (
                         <button
@@ -166,24 +161,23 @@ export default function MovieDetails() {
                   <div className="list castList">
                     {movie.cast && movie.cast.length > 0 ? (
                       movie.cast.slice(0, 6).map((member) => (
-                        <div key={member.id} className="member castMember">
-                          {member.profile_path ? (
-                            <img
-                              src={
-                                member.profile_path ||
-                                "https://via.placeholder.com/150x225?text=No+Image"
-                              }
-                              alt={member.name}
-                              className="photo castPhoto w-20"
-                            />
-                          ) : (
-                            <PersonPlaceholder />
-                          )}
-                          <p className="name castName">{member.name}</p>
-                          <p className="character castCharacter">
-                            {member.character}
-                          </p>
-                        </div>
+                        <Link to={`/person/${member.id}`} key={member.id}>
+                          <div className="member castMember">
+                            {member.profile_path ? (
+                              <img
+                                src={member.profile_path}
+                                alt={member.name}
+                                className="photo castPhoto w-20"
+                              />
+                            ) : (
+                              <PersonPlaceholder />
+                            )}
+                            <p className="name castName">{member.name}</p>
+                            <p className="character castCharacter">
+                              {member.character}
+                            </p>
+                          </div>
+                        </Link>
                       ))
                     ) : (
                       <p className="text-gray-500">
@@ -198,24 +192,23 @@ export default function MovieDetails() {
                   <div className="list crewList">
                     {movie.crew && movie.crew.length > 0 ? (
                       movie.crew.slice(0, 6).map((member) => (
-                        <div key={member.id} className="member crewMember">
-                          {member.profile_path ? (
-                            <img
-                              src={
-                                member.profile_path ||
-                                "https://via.placeholder.com/150x225?text=No+Image"
-                              }
-                              alt={member.name}
-                              className="photo crewPhoto w-20"
-                            />
-                          ) : (
-                            <PersonPlaceholder />
-                          )}
-                          <p className="name crewName">{member.name}</p>
-                          <p className="character crewCharacter">
-                            {member.job}
-                          </p>
-                        </div>
+                        <Link to={`/person/${member.id}`} key={member.id}>
+                          <div className="member crewMember">
+                            {member.profile_path ? (
+                              <img
+                                src={member.profile_path}
+                                alt={member.name}
+                                className="photo crewPhoto w-20"
+                              />
+                            ) : (
+                              <PersonPlaceholder />
+                            )}
+                            <p className="name crewName">{member.name}</p>
+                            <p className="character crewCharacter">
+                              {member.job}
+                            </p>
+                          </div>
+                        </Link>
                       ))
                     ) : (
                       <p className="text-gray-500">
@@ -231,6 +224,6 @@ export default function MovieDetails() {
           <p className="text-center text-gray-500">Movie not found.</p>
         )}
       </div>
-    </>
+    </div>
   );
 }

@@ -11,7 +11,9 @@ export const movieService = {
   },
 
   async searchMovies(query: string, page: number = 1) {
-    const response = await fetch(`${API_URL}/movies/search?query=${encodeURIComponent(query)}&page=${page}`);
+    const response = await fetch(
+      `${API_URL}/movies/search?query=${encodeURIComponent(query)}&page=${page}`
+    );
     if (!response.ok) {
       throw new Error("Failed to search movies");
     }
@@ -28,18 +30,27 @@ export const movieService = {
     return response.json();
   },
 
+  async getPersonDetails(personId: number) {
+    const response = await fetch(`${API_URL}/movies/persons/${personId}`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch person details");
+    }
+    console.log(`Fetching details for person ID: ${personId}`);
+    return response.json();
+  },
+
   // async changeStatus(movieId: number, status: "watched" | "unwatched") {
-    // const response = await fetch(`${API_URL}/movies/${movieId}/status`, {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({ status }),
-    // });
-    // if (!response.ok) {
-    //   throw new Error("Failed to change movie status");
-    // }
+  // const response = await fetch(`${API_URL}/movies/${movieId}/status`, {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  //   body: JSON.stringify({ status }),
+  // });
+  // if (!response.ok) {
+  //   throw new Error("Failed to change movie status");
+  // }
   //   console.log(`Changing status for movie ID ${movieId} to ${status}`);
-    // return response.json();
+  // return response.json();
   // },
 };
