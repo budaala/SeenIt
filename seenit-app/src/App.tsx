@@ -9,6 +9,8 @@ import NotFoundPage from "./pages/NotFoundPage";
 import MovieDetailsPage from "./pages/MovieDetailsPage";
 import PersonPage from "./pages/PersonPage";
 import Footer from "./components/Footer";
+import LogIn from "./components/SignIn/LogIn";
+import Register from "./components/SignIn/Register";
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/movies/:id" element={<MovieDetailsPage />} />
             <Route path="/person/:id" element={<PersonPage />} />
+            <Route path="/login" element={<LogIn />} />
+            <Route path="/register" element={<Register />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </main>

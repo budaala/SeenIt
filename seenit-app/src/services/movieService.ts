@@ -1,8 +1,8 @@
-const API_URL = "http://localhost:5001/api";
+const API_URL = "http://localhost:5001/api/movies";
 
 export const movieService = {
   async getMovies(type: string = "popular", page: number = 1) {
-    const response = await fetch(`${API_URL}/movies?type=${type}&page=${page}`);
+    const response = await fetch(`${API_URL}?type=${type}&page=${page}`);
     if (!response.ok) {
       throw new Error("Failed to fetch movies");
     }
@@ -12,7 +12,7 @@ export const movieService = {
 
   async searchMovies(query: string, page: number = 1) {
     const response = await fetch(
-      `${API_URL}/movies/search?query=${encodeURIComponent(query)}&page=${page}`
+      `${API_URL}/search?query=${encodeURIComponent(query)}&page=${page}`
     );
     if (!response.ok) {
       throw new Error("Failed to search movies");
@@ -22,7 +22,7 @@ export const movieService = {
   },
 
   async getMovieDetails(movieId: number) {
-    const response = await fetch(`${API_URL}/movies/${movieId}`);
+    const response = await fetch(`${API_URL}/${movieId}`);
     if (!response.ok) {
       throw new Error("Failed to fetch movie details");
     }
@@ -31,7 +31,7 @@ export const movieService = {
   },
 
   async getPersonDetails(personId: number) {
-    const response = await fetch(`${API_URL}/movies/persons/${personId}`);
+    const response = await fetch(`${API_URL}/persons/${personId}`);
     if (!response.ok) {
       throw new Error("Failed to fetch person details");
     }
