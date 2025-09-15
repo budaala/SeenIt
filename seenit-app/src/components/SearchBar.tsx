@@ -57,7 +57,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
         {showBar ? <SearchOffIcon /> : <SearchIcon />}
       </button>
       <div
-        className={`absolute searchBarContainer right-0 top-6 z-10 transition-all duration-300 ease-in-out overflow-hidden ${
+        className={`absolute searchBarContainer right-0 sm:top-6 z-10 transition-all duration-300 ease-in-out overflow-hidden ${
           showBar
             ? "w-64 opacity-100 translate-x-0"
             : "w-0 opacity-0 translate-x-8 pointer-events-none"

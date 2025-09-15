@@ -65,7 +65,12 @@ const returnProviderData = (provider) => {
     283: "https://player.pl/",
     505: "https://player.pl/",
     531: "https://premiery.pl.canalplus.com/",
-    35: "https://rakuten.tv/pl"
+    35: "https://rakuten.tv/pl",
+    1773: "https://www.skyshowtime.com/pl",
+    2102: "https://premiery.pl.canalplus.com/",
+    192: "https://www.youtube.com/movies",
+    3: "https://www.google.com/intl/pl_pl/movies/",
+    1899: "https://play.hbomax.com/"
   };
 
   const providerUrl = providerUrls[provider.provider_id] || null;
@@ -75,6 +80,56 @@ const returnProviderData = (provider) => {
     logo_path: getImageUrl(provider.logo_path, "w92"),
     url: providerUrl,
   };
+}
+
+const getCast = async (movieId) => {
+  try {
+    const response = await fetch(`https://api.themoviedb.org/3/movie/${movieId}/credits`, options);
+    const res = await response.json();
+    return res.cast.map((member) => ({
+      id: member.id,
+      name: member.name,
+      character: member.character,
+      profile_path: getImageUrl(member.profile_path)
+    }));
+  } catch (err) {
+    console.error("Error fetching cast:", err.message);
+    return [];
+  }
+}
+
+const getCrew = async (movieId) => {
+  try {
+    const response = await fetch(`https://api.themoviedb.org/3/movie/${movieId}/credits`, options);
+    const res = await response.json();
+    console.log(res.crew);
+    return res.crew.map((member) => ({
+      id: member.id,
+      name: member.name,
+      job: member.job,
+      profile_path: getImageUrl(member.profile_path)
+    }));
+  } catch (err) {
+    console.error("Error fetching crew:", err.message);
+    return [];
+  }
+}
+
+const getMovieCredits = async (personId) => {
+  try {
+    const response = await fetch(`https://api.themoviedb.org/3/person/${personId}/movie_credits`, options);
+    const res = await response.json();
+    const results = res.cast.map((movie) => ({
+      id: movie.id,
+      title: movie.title,
+      character: movie.character,
+      poster_path: getImageUrl(movie.poster_path)
+    }));
+    return results.splice(0, 10);
+  } catch (err) {
+    console.error("Error fetching movie credits:", err.message);
+    return [];
+  }
 }
 
 const token = process.env.TMDB_BEARER_TOKEN;
@@ -180,12 +235,45 @@ router.get("/:id", async (req, res) => {
       backdrop_path: getImageUrl(data.backdrop_path),
       rating: (Math.round(data.vote_average * 100) / 100).toFixed(1),
       watchProviders: await getWatchProviders(data.id),
+      cast: await getCast(data.id),
+      crew: await getCrew(data.id),
     }
     console.log(movie.watchProviders)
     res.json(movie);
   } catch (err) {
     console.error("Error fetching TMDB movie:", err.message);
     res.status(500).json({ error: "Failed to fetch movie" });
+  }
+});
+
+router.get("/persons/:id", async (req, res) => {
+  const personId = req.params.id;
+
+  try {
+    const response = await fetch(
+      `https://api.themoviedb.org/3/person/${personId}?language=${language}`, options
+    );
+    if (!response.ok) {
+      console.error("Failed to fetch from TMDB:", response.statusText);
+      return res.status(response.status).json({ error: "Failed to fetch person" });
+    }
+    const data = await response.json();
+    const person = {
+      id: data.id,
+      name: data.name,
+      biography: data.biography,
+      birthday: data.birthday,
+      deathday: data.deathday,
+      imbd_id: data.imdb_id,
+      profile_path: getImageUrl(data.profile_path),
+      known_for_department: data.known_for_department,
+      movie_credits: await getMovieCredits(data.id),
+    }
+    console.log(person);
+    res.json(person);
+  } catch (err) {
+    console.error("Error fetching TMDB person:", err.message);
+    res.status(500).json({ error: "Failed to fetch person" });
   }
 });
 

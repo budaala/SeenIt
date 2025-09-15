@@ -8,12 +8,12 @@ import logo from "../assets/LogoWithName.png";
 
 const Navbar: React.FC = () => {
   return (
-    <nav className="px-4 py-5">
-      <div className="container mx-auto flex items-center justify-center sm:justify-between max-w-7xl">
-        <Link to="/">
-          <img src={logo} alt="SeenIt logo" className="h-10" />
+    <nav className="navbar">
+      <div className="container">
+        <Link to="/" className="mainLogo">
+          <img src={logo} alt="SeenIt logo" className="h-10 w-auto" />
         </Link>
-        <ul className="space-x-6 hidden sm:flex">
+        <ul className="sm:space-x-6 hidden sm:flex">
           <li>
             <Link to="/top-rated" className="link">
               <EmojiEventsIcon />
