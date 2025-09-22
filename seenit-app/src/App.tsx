@@ -11,6 +11,7 @@ import PersonPage from "./pages/PersonPage";
 import Footer from "./components/Footer";
 import LogIn from "./components/SignIn/LogIn";
 import Register from "./components/SignIn/Register";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
@@ -29,6 +30,28 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
+          <Toaster
+            position="top-center"
+            toastOptions={{
+              success: {
+                style: {
+                  border: "1px solid rgb(5, 223, 114)",
+                  boxShadow: "0px 0px 10px 0px rgb(5, 223, 114)",
+                  background: "rgba(5, 223, 114, 0.22)",
+                  color: "#fff",
+                },
+              },
+              error: {
+                style: {
+                  border: "1px solid rgb(223, 5, 5)",
+                  boxShadow: "0px 0px 10px 0px rgb(223, 5, 5)",
+                  background: "rgba(223, 5, 5, 0.22)",
+                  color: "#fff",
+                },
+              },
+            }}
+            reverseOrder={false}
+          />
         </main>
         <Footer />
       </div>

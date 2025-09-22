@@ -1,8 +1,50 @@
-import { Link } from "react-router-dom";
-import logo from "../../assets/LogoWithName.png";
+import { Link, useNavigate } from "react-router-dom";
+import logo from "../../assets/LogoWithName2.png";
 import backdrop from "../../assets/backdrop.png";
+import { useState } from "react";
+import { useForm, type SubmitHandler } from "react-hook-form";
+import { userService } from "../../services/userService";
+import toast from "react-hot-toast";
+import { useUserStore } from "../../store/userStore";
+
+interface IFormInput {
+  usernameOrEmail: string;
+  password: string;
+}
 
 const LogIn: React.FC = () => {
+  const navigate = useNavigate();
+  const [apiError, setApiError] = useState("");
+
+  const setUser = useUserStore((state) => state.setUser);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IFormInput>({
+    defaultValues: {
+      usernameOrEmail: "",
+      password: "",
+    },
+  });
+
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    const response = await userService.logIn(
+      data.usernameOrEmail,
+      data.password
+    );
+
+    if (response.success) {
+      setUser(response.user.username);
+      toast.success("Logged in successfully!");
+      navigate("/");
+    } else {
+      setApiError(response.message);
+      toast.error("Logging in failed!");
+    }
+  };
+
   return (
     <>
       <div
@@ -26,23 +68,29 @@ const LogIn: React.FC = () => {
             </p>
           </div>
           <div className="login">
-            <form className="form">
+            <form className="form" onSubmit={handleSubmit(onSubmit)}>
               <div className="form-group">
                 <input
-                  name="username"
                   type="text"
+                  {...register("usernameOrEmail", { required: true })}
                   className="form-control"
                   placeholder="Username or Email"
                 ></input>
+                <p className="error-message">
+                  {errors.usernameOrEmail?.message}
+                </p>
               </div>
               <div className="form-group">
                 <input
-                  name="password"
+                  {...register("password", { required: true })}
                   type="password"
                   className="form-control"
                   placeholder="Password"
                 ></input>
+                <p className="error-message">{errors.password?.message}</p>
               </div>
+              <p className="api-error-message">{apiError}</p>
+
               <button type="submit" className="submitButton">
                 Login
               </button>
