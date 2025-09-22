@@ -8,29 +8,30 @@ const router = express.Router();
 dotenv.config();
 
 const login = async (req, res) => {
-    const { username, password } = req.body;
+    const { usernameOrEmail, password } = req.body;
 
-    if (username && password) {
+    if (usernameOrEmail && password) {
         try {
-            const user = await User.findOne({ username });
+            const user = await User.findOne({ $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }] });
             if (!user) {
-                return res.status(401).json({ message: "Invalid credentials" });
+                return res.status(401).json({ success: false, message: "Invalid credentials" });
             }
 
             const isMatch = await bcrypt.compare(password, user.password);
+
             if (!isMatch) {
-                return res.status(401).json({ message: "Invalid credentials" });
+                return res.status(401).json({ success: false, message: "Invalid credentials" });
             }
 
             const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, { expiresIn: "7d" });
             console.log(token)
 
-            res.json({ message: "Login successful", token, user: { username: user.username, id: user.id } });
+            res.json({ success: true, message: "Login successful", token, user: { username: user.username, id: user.id } });
         } catch (err) {
-            res.status(500).json({ message: "Server error", error: err });
+            res.status(500).json({ success: false, message: "Server error", error: err });
         }
     } else {
-        res.status(401).json({ message: "Invalid credentials" });
+        res.status(401).json({ success: false, message: "Invalid credentials" });
     }
 };
 
@@ -48,12 +49,12 @@ const register = async (req, res) => {
             const newUser = new User({ username, email, password: hashedPassword, isAdmin: isAdmin });
             console.log(newUser)
             await newUser.save();
-            res.json({ message: "Registration successful", user: { username, email } });
+            res.json({ success: true, message: "Registration successful", user: { username, email } });
         } catch (err) {
-            res.status(500).json({ message: "Server error", error: err });
+            res.status(500).json({ success: false, message: "Server error", error: err });
         }
     } else {
-        res.status(400).json({ message: "All fields are required" });
+        res.status(400).json({ success: false, message: "All fields are required" });
     }
 };
 
